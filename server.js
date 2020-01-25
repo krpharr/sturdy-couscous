@@ -1,7 +1,11 @@
 // Dependencies
 // =============================================================
-var express = require("express");
-var path = require("path");
+const express = require("express");
+const path = require("path");
+const fs = require("fs");
+const Note = require("./lib/js/Note");
+const Db = require("./lib/js/Db");
+
 
 // Sets up the Express App
 // =============================================================
@@ -13,15 +17,15 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 
-var notes = [{
-        id: "1",
-        text: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ipsam sed eius nisi ut alias repellendus explicabo non unde, fugiat libero ex nam facilis repellat pariatur."
-    },
-    {
-        id: "2",
-        text: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ipsam sed eius nisi ut alias repellendus explicabo non unde, fugiat libero ex nam facilis repellat pariatur."
-    }
-];
+// let notes = [new Note("Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum, aperiam?"),
+//     new Note("Lorem ipsum, dolor sit amet consectetur adipisicing elit. Velit, et molestiae sint itaque quae deserunt"),
+//     new Note("Lorem ipsum dolor, sit amet consectetur adipisicing elit.")
+// ];
+
+let db = new Db(__dirname);
+// db.setNotes(notes);
+let notes = db.getNotes();
+console.log("notes", notes);
 
 // Routes
 // =============================================================
@@ -38,20 +42,23 @@ app.get("/notes", function(req, res) {
     res.sendFile(path.join(__dirname, "site/notes.html"));
 });
 
-// Displays all characters
+// Displays all notes
 app.get("/api/notes", function(req, res) {
+    console.log(notes);
     return res.json(notes);
 });
 
-// Displays a single character, or returns false
-app.get("/api/characters/:id", function(req, res) {
+// deletes a single note, or returns true or false
+app.delete("/api/notes/:id", function(req, res) {
     var chosen = req.params.id;
 
     console.log(chosen);
 
     for (var i = 0; i < notes.length; i++) {
-        if (chosen === notes[i].routeName) {
-            return res.json(notes[i]);
+        console.log(notes[i].id)
+        if (chosen === notes[i].id) {
+            notes.splice(i, 1)
+            return res.json(true);
         }
     }
 
@@ -62,11 +69,11 @@ app.get("/api/characters/:id", function(req, res) {
 app.post("/api/notes", function(req, res) {
     // req.body hosts is equal to the JSON post sent from the user
     // This works because of our body parsing middleware
-    var newNote = req.body;
+    let newNote = new Note(req.body.text);
 
     // Using a RegEx Pattern to remove spaces from newCharacter
     // You can read more about RegEx Patterns later https://www.regexbuddy.com/regex.html
-    newNote.routeName = newNote.id;
+    // newNote.routeName = newNote.id;
 
     console.log(newNote);
 
