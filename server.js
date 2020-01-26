@@ -23,10 +23,11 @@ app.use(express.json());
 // ];
 
 let db = new Db(__dirname);
-// db.setNotes(notes);
-let notes = db.getNotes();
-console.log("notes", notes);
 
+//let notes = db.getNotes();
+
+
+//console.log("notes", notes);
 // Routes
 // =============================================================
 
@@ -35,29 +36,32 @@ console.log("notes", notes);
 // });
 
 app.get("/", function(req, res) {
-    res.sendFile(path.join(__dirname, "site/index.html"));
+    res.sendFile(path.join(__dirname, "public/index.html"));
 });
 
 app.get("/notes", function(req, res) {
-    res.sendFile(path.join(__dirname, "site/notes.html"));
+    res.sendFile(path.join(__dirname, "public/notes.html"));
 });
 
 // Displays all notes
 app.get("/api/notes", function(req, res) {
-    console.log(notes);
+    let notes = db.getNotes();
+    // console.log(notes);
     return res.json(notes);
 });
 
 // deletes a single note, or returns true or false
 app.delete("/api/notes/:id", function(req, res) {
+    let notes = db.getNotes();
     var chosen = req.params.id;
 
     console.log(chosen);
 
     for (var i = 0; i < notes.length; i++) {
-        console.log(notes[i].id)
+        console.log(notes[i].id);
         if (chosen === notes[i].id) {
-            notes.splice(i, 1)
+            notes.splice(i, 1);
+            db.setNotes(notes);
             return res.json(true);
         }
     }
@@ -76,9 +80,9 @@ app.post("/api/notes", function(req, res) {
     // newNote.routeName = newNote.id;
 
     console.log(newNote);
-
+    let notes = db.getNotes();
     notes.push(newNote);
-
+    db.setNotes(notes);
     res.json(newNote);
 });
 
