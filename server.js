@@ -12,28 +12,20 @@ const Db = require("./lib/js/Db");
 var app = express();
 var PORT = process.env.PORT || 3000;
 
+// serve static files from /public directory
+app.use(express.static('public'));
 // Sets up the Express app to handle data parsing
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 
-// let notes = [new Note("Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum, aperiam?"),
-//     new Note("Lorem ipsum, dolor sit amet consectetur adipisicing elit. Velit, et molestiae sint itaque quae deserunt"),
-//     new Note("Lorem ipsum dolor, sit amet consectetur adipisicing elit.")
+// let preNotes = [new Note("Lorem", "Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum, aperiam?"),
+//     new Note("Ipsum", "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Velit, et molestiae sint itaque quae deserunt"),
+//     new Note("Velit", "Lorem ipsum dolor, sit amet consectetur adipisicing elit.")
 // ];
 
 let db = new Db(__dirname);
 
-//let notes = db.getNotes();
-
-
-//console.log("notes", notes);
-// Routes
-// =============================================================
-
-// app.get("/", function(req, res) {
-//     res.sendFile(path.join(__dirname, "index.html"));
-// });
 
 app.get("/", function(req, res) {
     res.sendFile(path.join(__dirname, "public/index.html"));
@@ -46,17 +38,17 @@ app.get("/notes", function(req, res) {
 // Displays all notes
 app.get("/api/notes", function(req, res) {
     let notes = db.getNotes();
-    // console.log(notes);
-    return res.json(notes);
+    return notes === "undefined" ? {} : res.json(notes);
 });
 
 // deletes a single note, or returns true or false
 app.delete("/api/notes/:id", function(req, res) {
     let notes = db.getNotes();
+    if (notes === "undefined") {
+        return res.json(false);
+    }
     var chosen = req.params.id;
-
     console.log(chosen);
-
     for (var i = 0; i < notes.length; i++) {
         console.log(notes[i].id);
         if (chosen === notes[i].id) {
@@ -65,28 +57,23 @@ app.delete("/api/notes/:id", function(req, res) {
             return res.json(true);
         }
     }
-
     return res.json(false);
 });
 
-// Create New Characters - takes in JSON input
+// Create New Note - takes in JSON input
 app.post("/api/notes", function(req, res) {
-    // req.body hosts is equal to the JSON post sent from the user
-    // This works because of our body parsing middleware
-    let newNote = new Note(req.body.text);
-
-    // Using a RegEx Pattern to remove spaces from newCharacter
-    // You can read more about RegEx Patterns later https://www.regexbuddy.com/regex.html
-    // newNote.routeName = newNote.id;
-
+    let { title, text } = req.body;
+    let newNote = new Note(title, text);
     console.log(newNote);
     let notes = db.getNotes();
+    if (notes === "undefined") {
+        notes = [];
+    }
     notes.push(newNote);
     db.setNotes(notes);
     res.json(newNote);
 });
 
-// Starts the server to begin listening
 // =============================================================
 app.listen(PORT, function() {
     console.log("App listening on PORT " + PORT);
