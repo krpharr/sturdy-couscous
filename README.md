@@ -1,5 +1,29 @@
-# **Instructions**
+# sturdy-couscous
 
-* Spend a few moments looking over the code sent to you. First, get the server running, then begin to dissect the JavaScript code found at the bottom of `add.html`.
+Create, read and delete notes with this easy to use application!
 
-* Explain to one another what the code does, what its for, and why its relevant to the application so far. Be sure to explain to one another what the `$.post` code is doing.
+## live on heroku
+
+https://vast-chamber-18644.herokuapp.com/
+
+
+## installation and run
+
+    git 
+    cd sturdy-couscous
+    npm install
+    node server.js
+    open in browser http://localhost:3000/
+
+## dependencies
+
+NPM
+<ul>
+    <li>express</li>
+    <li>fs</li>
+    <li>path</li>
+    <li>jest</li>
+</ul>
+    JavaScript
+    HTML
+    CSS

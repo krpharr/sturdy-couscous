@@ -1,31 +1,19 @@
-// Dependencies
-// =============================================================
 const express = require("express");
 const path = require("path");
 const fs = require("fs");
 const Note = require("./lib/js/Note");
 const Db = require("./lib/js/Db");
 
-
-// Sets up the Express App
-// =============================================================
 var app = express();
 var PORT = process.env.PORT || 3000;
 
 // serve static files from /public directory
 app.use(express.static('public'));
-// Sets up the Express app to handle data parsing
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-
-// let preNotes = [new Note("Lorem", "Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum, aperiam?"),
-//     new Note("Ipsum", "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Velit, et molestiae sint itaque quae deserunt"),
-//     new Note("Velit", "Lorem ipsum dolor, sit amet consectetur adipisicing elit.")
-// ];
-
 let db = new Db(__dirname);
-
 
 app.get("/", function(req, res) {
     res.sendFile(path.join(__dirname, "public/index.html"));
