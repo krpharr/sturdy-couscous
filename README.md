@@ -4,7 +4,7 @@ Create, read and delete notes with this easy to use application!
 
 ## live on heroku
 
-https://vast-chamber-18644.herokuapp.com/
+<a href="https://vast-chamber-18644.herokuapp.com/" target="_blank">https://vast-chamber-18644.herokuapp.com/</a>
 
 
 ## installation and run
